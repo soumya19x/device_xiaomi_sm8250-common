@@ -345,6 +345,7 @@ PRODUCT_PACKAGES += \
     qca6234-service.sh \
 
 PRODUCT_PACKAGES += \
+    init.nfc.rc \
     init.qcom.factory.rc \
     init.qcom.rc \
     init.recovery.qcom.rc \
