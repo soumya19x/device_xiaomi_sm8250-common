@@ -153,7 +153,7 @@ Return<int32_t> FingerprintInscreen::getSize() {
 }
 
 Return<bool> FingerprintInscreen::dimBehindPressedLayer() {
-    return true;
+    return false;
 }
 
 }  // namespace implementation
