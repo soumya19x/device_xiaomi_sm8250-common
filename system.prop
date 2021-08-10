@@ -24,6 +24,13 @@ persist.vendor.dpm.feature=1
 # Fwk detect
 ro.vendor.qti.va_aosp.support=1
 
+#PPUI
+ro.ppui.device_name= Poco F2 Pro
+ro.ppui.version=3.8
+ro.ppui.version_code=Hikaru
+ro.ppui.is_official=true
+ro.ppui.maintainer_name=Soumyo & Ziad
+
 # IMS
 persist.dbg.volte_avail_ovr=1
 persist.dbg.vt_avail_ovr=1
