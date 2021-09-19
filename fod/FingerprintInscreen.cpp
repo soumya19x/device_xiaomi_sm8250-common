@@ -10,22 +10,13 @@
 #include <android-base/logging.h>
 #include <hardware_legacy/power.h>
 #include <cmath>
-#include <fcntl.h>
 #include <fstream>
-#include <thread>
-#include <poll.h>
-#include <sys/stat.h>
 
 #define FINGERPRINT_ACQUIRED_VENDOR 6
 
 #define COMMAND_NIT 10
 #define PARAM_NIT_FOD 1
 #define PARAM_NIT_NONE 0
-
-#define FOD_UI_PATH "/sys/devices/platform/soc/soc:qcom,dsi-display-primary/fod_ui"
-
-#define BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/brightness"
-#define TOUCH_FOD_ENABLE 10
 
 namespace vendor {
 namespace lineage {
@@ -35,60 +26,9 @@ namespace inscreen {
 namespace V1_0 {
 namespace implementation {
 
-static bool readBool(int fd) {
-    char c;
-    int rc;
-
-    rc = lseek(fd, 0, SEEK_SET);
-    if (rc) {
-        LOG(ERROR) << "failed to seek fd, err: " << rc;
-        return false;
-    }
-
-    rc = read(fd, &c, sizeof(char));
-    if (rc != 1) {
-        LOG(ERROR) << "failed to read bool from fd, err: " << rc;
-        return false;
-    }
-
-    return c != '0';
-template <typename T>
-static T get(const std::string& path, const T& def) {
-    std::ifstream file(path);
-    T result;
-
-    file >> result;
-    return file.fail() ? def : result;
-}
-
 FingerprintInscreen::FingerprintInscreen() {
     mTouchFeatureService = ITouchFeature::getService();
     mXiaomiFingerprintService = IXiaomiFingerprint::getService();
-
-    std::thread([this]() {
-        int fd = open(FOD_UI_PATH, O_RDONLY);
-        if (fd < 0) {
-            LOG(ERROR) << "failed to open fd, err: " << fd;
-            return;
-        }
-
-        struct pollfd fodUiPoll = {
-            .fd = fd,
-            .events = POLLERR | POLLPRI,
-            .revents = 0,
-        };
-
-        while (true) {
-            int rc = poll(&fodUiPoll, 1, -1);
-            if (rc < 0) {
-                LOG(ERROR) << "failed to poll fd, err: " << rc;
-                continue;
-            }
-
-            mXiaomiFingerprintService->extCmd(COMMAND_NIT,
-                    readBool(fd) ? PARAM_NIT_FOD : PARAM_NIT_NONE);
-        }
-    }).detach();
 }
 
 Return<void> FingerprintInscreen::onStartEnroll() {
@@ -100,10 +40,14 @@ Return<void> FingerprintInscreen::onFinishEnroll() {
 }
 
 Return<void> FingerprintInscreen::onPress() {
+    acquire_wake_lock(PARTIAL_WAKE_LOCK, LOG_TAG);
+    mXiaomiFingerprintService->extCmd(COMMAND_NIT, PARAM_NIT_FOD);
     return Void();
 }
 
 Return<void> FingerprintInscreen::onRelease() {
+    mXiaomiFingerprintService->extCmd(COMMAND_NIT, PARAM_NIT_NONE);
+    release_wake_lock(LOG_TAG);
     return Void();
 }
 
