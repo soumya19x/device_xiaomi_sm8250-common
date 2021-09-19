@@ -202,6 +202,12 @@ PRODUCT_PACKAGES += \
     fastbootd
 
 PRODUCT_PACKAGES += \
+    vendor.goodix.hardware.biometrics.fingerprint@2.1.vendor
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/permissions/vendor.lineage.biometrics.fingerprint.inscreen.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/vendor.lineage.biometrics.fingerprint.inscreen.xml
+
+PRODUCT_PACKAGES += \
     android.hardware.biometrics.fingerprint@2.1-service.xiaomi_kona
 
 PRODUCT_PACKAGES += \
