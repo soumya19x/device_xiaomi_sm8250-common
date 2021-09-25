@@ -25,6 +25,7 @@
 #define FOD_UI_PATH "/sys/devices/platform/soc/soc:qcom,dsi-display-primary/fod_ui"
 
 #define BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/brightness"
+#define TOUCH_FOD_ENABLE 10
 
 namespace vendor {
 namespace lineage {
@@ -61,6 +62,7 @@ static T get(const std::string& path, const T& def) {
 }
 
 FingerprintInscreen::FingerprintInscreen() {
+    mTouchFeatureService = ITouchFeature::getService();
     mXiaomiFingerprintService = IXiaomiFingerprint::getService();
 
     std::thread([this]() {
@@ -106,10 +108,12 @@ Return<void> FingerprintInscreen::onRelease() {
 }
 
 Return<void> FingerprintInscreen::onShowFODView() {
+    mTouchFeatureService->setTouchMode(TOUCH_FOD_ENABLE, 1);
     return Void();
 }
 
 Return<void> FingerprintInscreen::onHideFODView() {
+    mTouchFeatureService->resetTouchMode(TOUCH_FOD_ENABLE);
     return Void();
 }
 
