@@ -46,7 +46,9 @@ cc_binary {
         "libutils",
         "vendor.lineage.biometrics.fingerprint.inscreen@1.0",
         "//hardware/xiaomi:vendor.goodix.hardware.biometrics.fingerprint@2.1",
+        "//hardware/xiaomi:vendor.xiaomi.hardware.displayfeature@1.0",
         "//hardware/xiaomi:vendor.xiaomi.hardware.fingerprintextension@1.0",
+        "//hardware/xiaomi:vendor.xiaomi.hardware.touchfeature@1.0",
     ],
     vendor: true,
 }
@@ -56,8 +58,5 @@ cc_library_static {
     srcs: ["FodExtension.cpp"],
     include_dirs: [
         "frameworks/native/services/surfaceflinger/CompositionEngine/include"
-    ],
-    header_libs: [
-        "generated_kernel_headers",
     ],
 }
