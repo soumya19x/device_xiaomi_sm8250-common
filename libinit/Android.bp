@@ -20,6 +20,9 @@ cc_library_static {
     name: "init_xiaomi_kona",
     srcs: ["init_xiaomi_kona.cpp"],
     whole_static_libs: ["libinit_xiaomi_kona"],
-    include_dirs: ["system/core/init"],
+    include_dirs: [
+        "system/core/init",
+        "system/libbase/include",
+    ],
     recovery_available: true,
 }
