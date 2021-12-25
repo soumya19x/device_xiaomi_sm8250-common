@@ -87,7 +87,6 @@ BiometricsFingerprint::BiometricsFingerprint() : mClientCallback(nullptr), mDevi
         }
     }
 
-#ifdef FOD
     std::thread([this]() {
         int fd = open(FOD_UI_PATH, O_RDONLY);
         if (fd < 0) {
@@ -111,7 +110,6 @@ BiometricsFingerprint::BiometricsFingerprint() : mClientCallback(nullptr), mDevi
             extCmd(COMMAND_NIT, readBool(fd) ? PARAM_NIT_FOD : PARAM_NIT_NONE);
         }
     }).detach();
-#endif
 }
 
 BiometricsFingerprint::~BiometricsFingerprint() {
